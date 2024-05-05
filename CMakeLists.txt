@@ -5,10 +5,6 @@ project(FreetypeAndMsdfgen)
 set(CMAKE_C_STANDARD 99)  # Default C standard
 set(CMAKE_CXX_STANDARD 17)  # Default C++ standard
 
-# Variable to specify the output directory
-set(OUTPUT_DIR ${CMAKE_BINARY_DIR}/output)
-
-file(GLOB SRC_FREETYPE_BASE "${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/*.c")
 file(GLOB HEADER_FREETYPE_INC_FREETYPE "${CMAKE_CURRENT_SOURCE_DIR}/freetype/include/freetype/internal/*.h")
 file(GLOB HEADER_FREETYPE_INC_FREETYPE_INTERNAL "${CMAKE_CURRENT_SOURCE_DIR}/freetype/include/freetype/internal/*.h")
 
@@ -20,7 +16,26 @@ add_library(freetype STATIC
     ${HEADER_FREETYPE_INC_FREETYPE_INTERNAL}
     # Source files
     ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/autofit/autofit.c
-    ${SRC_FREETYPE_BASE}
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftbase.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftbbox.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftbdf.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftbitmap.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftcid.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftfstype.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftgasp.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftglyph.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftgxval.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftinit.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftmm.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftotval.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftpatent.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftpfr.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftstroke.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftsynth.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/fttype1.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftwinfnt.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftsystem.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/base/ftdebug.c
     ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/bdf/bdf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/bzip2/ftbzip2.c
     ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/cache/ftcache.c
@@ -37,6 +52,7 @@ add_library(freetype STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/sdf/sdf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/sfnt/sfnt.c
     ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/smooth/smooth.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/svg/svg.c
     ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/truetype/truetype.c
     ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/type1/type1.c
     ${CMAKE_CURRENT_SOURCE_DIR}/freetype/src/type42/type42.c
@@ -65,18 +81,3 @@ add_library(msdfgen STATIC ${SRC_MSDFGEN})
 target_include_directories(msdfgen PUBLIC include freetype/include)
 target_compile_definitions(msdfgen PUBLIC MSDFGEN_USE_CPP11)
 target_link_libraries(msdfgen PRIVATE freetype)
-
-# Set up output directories and compile options for different build types
-foreach(TARGET freetype msdfgen)
-    set_target_properties(${TARGET} PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_DIR}/debug/${TARGET}
-        ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_DIR}/release/${TARGET}
-        ARCHIVE_OUTPUT_DIRECTORY_MINSIZEREL ${OUTPUT_DIR}/dist/${TARGET}
-        LIBRARY_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_DIR}/debug/${TARGET}
-        LIBRARY_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_DIR}/release/${TARGET}
-        LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${OUTPUT_DIR}/dist/${TARGET}
-        RUNTIME_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_DIR}/debug/${TARGET}
-        RUNTIME_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_DIR}/release/${TARGET}
-        RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${OUTPUT_DIR}/dist/${TARGET}
-    )
-endforeach()
